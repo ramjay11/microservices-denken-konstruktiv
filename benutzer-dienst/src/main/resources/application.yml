@@ -1,0 +1,36 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: benutzer-dienst
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8090/eureka/
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+    endpoints:
+      web:
+        exposure:
+          include: health
+    endpoint:
+      health:
+        show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      benutzer-dienst:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 60
+        minimum-number-of-calls: 6
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 3s
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-size: 19
+        sliding-window-type: COUNT_BASED
